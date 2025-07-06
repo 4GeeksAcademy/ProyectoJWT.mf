@@ -10,6 +10,8 @@ from api.models import db
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 # from models import Person
 
@@ -17,9 +19,13 @@ ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../dist/')
 app = Flask(__name__)
+CORS(app, origins="https://curly-space-rotary-phone-5gr6vxrq457pcvvrr-3000.app.github.dev")
 app.url_map.strict_slashes = False
 
-# database condiguration
+app.config["JWT_SECRET_KEY"] = "top-secret"  
+jwt = JWTManager(app)
+
+# database configuration
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace(
